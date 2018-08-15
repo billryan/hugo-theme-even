@@ -1,4 +1,5 @@
 {{ if and .IsPage (ne .Params.comment false) }}
+  <div class="btn">Comments</div>
   <!-- Disqus -->
   {{- if .Site.DisqusShortname -}}
     <div id="disqus_thread"></div>
@@ -106,4 +107,68 @@
   <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
   {{- end }}
 
+  <!-- comment -->
+  {{- if .Site.Params.comment.owner -}}
+  <div id="comment-thread"></div>
+
+  <link rel="stylesheet" href="{{ "lib/comment/comment.css" | relURL }}">
+  <!-- for IE support -->
+  <!--[if lte IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-sham.min.js"></script>
+  <![endif]-->
+  {{ if .Site.Params.publicCDN.enable -}}
+    {{ .Site.Params.publicCDN.jquery | safeHTML }}
+    {{ .Site.Params.publicCDN.markedJS | safeHTML }}
+    {{ .Site.Params.publicCDN.timeagoJS | safeHTML }}
+    {{ .Site.Params.publicCDN.spinJS | safeHTML }}
+    {{ .Site.Params.publicCDN.highlightJS | safeHTML }}
+    {{ .Site.Params.publicCDN.highlightCSS | safeHTML }}
+  {{- else -}}
+    <script src="{{ "lib/jquery/jquery-3.2.1.min.js" | relURL }}"></script>
+    <script src="{{ "lib/marked/marked-0.3.6.min.js" | relURL }}"></script>
+    <script src="{{ "lib/timeago/timeago-3.0.2.min.js" | relURL }}"></script>
+    <script src="{{ "lib/spin.js/spin-2.3.2.min.js" | relURL }}"></script>
+    <script src="{{ "lib/highlight/highlight-9.12.0.min.js" | relURL }}"></script>
+    <link rel="stylesheet" href="{{ "lib/highlight/default.min.css" | relURL }}">
+  {{- end }}
+  <script type="text/javascript">
+    marked.setOptions({
+    highlight: function (code, lang) {
+       return hljs.highlightAuto(code).value;
+    }
+    });
+    function Highlighting(){
+      var markdowns = document.getElementsByClassName('markdown');
+      for(var i=0;i<markdowns.length;i++){
+         if(markdowns[i].innerHTML) markdowns[i].innerHTML =marked(markdowns[i].innerHTML);
+      }
+    }
+    window.addEventListener('DOMContentLoaded', Highlighting, false);
+    window.addEventListener('load', Highlighting, false);
+  </script>
+
+  <!-- comment.js -->
+  <script src="{{ "lib/comment/comment.js" | relURL }}"></script>
+
+  <div id="loading-spin"></div>
+  <script type="text/javascript">
+    var opt = {
+      type: "github",
+      user: '{{ .Site.Params.comment.owner }}',
+      repo: '{{ .Site.Params.comment.repo }}',
+      no_comment: "暂时还没有留言呢，点击下面的按钮去留言吧！",
+      go_to_comment: "去留言",
+      issue_title: '{{ .Title }}',
+      btn_class: "btn",
+      comments_target: "#comment-thread",
+      loading_target: "#loading-spin",
+      client_id: '{{ .Site.Params.comment.clientId }}',
+      client_secret: '{{ .Site.Params.comment.clientSecret }}'
+    };
+    getComments(opt);
+ </script>
+
+  <noscript>Please enable JavaScript to view the <a href="https://github.com/wzpan/comment.js"> powered by wzpan.</a></noscript>
+  {{- end }}
 {{- end }}
