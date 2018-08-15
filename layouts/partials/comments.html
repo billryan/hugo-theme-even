@@ -1,5 +1,4 @@
 {{ if and .IsPage (ne .Params.comment false) }}
-  <div class="btn">Comments</div>
   <!-- Disqus -->
   {{- if .Site.DisqusShortname -}}
     <div id="disqus_thread"></div>
@@ -109,6 +108,7 @@
 
   <!-- comment -->
   {{- if .Site.Params.comment.owner -}}
+  <div class="btn">Comments</div>
   <div id="comment-thread"></div>
 
   <link rel="stylesheet" href="{{ "lib/comment/comment.css" | relURL }}">
